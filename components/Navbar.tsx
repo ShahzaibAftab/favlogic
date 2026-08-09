@@ -76,22 +76,12 @@ export default function Navbar({ activeTab = 'Inbox', onTabChange }: NavbarProps
       zIndex: 20,
     }}>
       {/* Left: Logo + Nav */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {/* BOXpad logo */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* BOXpad logo matching screenshot */}
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
-          <div style={{
-            width: '28px',
-            height: '28px',
-            background: 'linear-gradient(135deg, #2563eb, #06b6d4)',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: '6px',
-          }}>
-            <span style={{ color: 'white', fontWeight: 800, fontSize: '10px', letterSpacing: '-0.5px' }}>B</span>
-          </div>
-          <span style={{ fontWeight: 700, fontSize: '14px', color: '#1e40af', letterSpacing: '-0.3px' }}>BOXpad</span>
+          <span style={{ fontWeight: 800, fontSize: '18px', color: '#0284c7', letterSpacing: '-0.5px' }}>
+            BOX<span style={{ fontWeight: 600 }}>pad</span>
+          </span>
         </div>
 
         {/* Nav tabs */}
@@ -105,14 +95,14 @@ export default function Navbar({ activeTab = 'Inbox', onTabChange }: NavbarProps
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                padding: '5px 10px',
-                borderRadius: '6px',
-                fontSize: '12.5px',
+                gap: '6px',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '13px',
                 fontWeight: isActive ? 600 : 400,
-                color: isActive ? '#111827' : '#6b7280',
+                color: isActive ? '#111827' : '#4b5563',
                 background: isActive ? '#f3f4f6' : 'transparent',
-                border: 'none',
+                border: isActive ? '1px solid #e5e7eb' : '1px solid transparent',
                 cursor: 'pointer',
                 transition: 'all 0.15s',
               }}
@@ -125,7 +115,7 @@ export default function Navbar({ activeTab = 'Inbox', onTabChange }: NavbarProps
       </div>
 
       {/* Right: Settings + User */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex', alignItems: 'center' }}>
           <SettingsIcon />
         </button>
@@ -134,15 +124,15 @@ export default function Navbar({ activeTab = 'Inbox', onTabChange }: NavbarProps
             width: '28px',
             height: '28px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+            background: '#e11d48',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontSize: '11px',
+            fontSize: '12px',
             fontWeight: 700,
           }}>M</div>
-          <span style={{ fontSize: '12.5px', fontWeight: 500, color: '#111827' }}>Michael Johnson</span>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#111827' }}>Michael Johnson</span>
         </div>
       </div>
     </header>

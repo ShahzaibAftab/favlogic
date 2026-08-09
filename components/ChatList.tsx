@@ -58,11 +58,13 @@ export default function ChatList({
     <div style={{
       width: '260px',
       flexShrink: 0,
-      borderRight: '1px solid #e5e7eb',
+      borderRadius: '12px',
+      border: '1px solid #e2e8f0',
       background: '#ffffff',
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
+      overflow: 'hidden',
     }}>
       {/* Header with Michael Johnson + edit icon */}
       <div style={{
@@ -171,7 +173,7 @@ export default function ChatList({
       </div>
 
       {/* Conversation list */}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {conversations.length === 0 ? (
           <div style={{ padding: '24px', textAlign: 'center', color: '#9ca3af', fontSize: '12px' }}>
             No conversations found
@@ -185,21 +187,23 @@ export default function ChatList({
                 onClick={() => onSelectConversation(conv.id)}
                 style={{
                   display: 'flex',
-                  alignItems: 'flex-start',
+                  alignItems: 'center',
                   gap: '10px',
-                  padding: '10px 14px',
+                  padding: '10px 12px',
                   cursor: 'pointer',
-                  background: isSelected ? '#f0f4ff' : 'transparent',
-                  borderLeft: isSelected ? '3px solid #6366f1' : '3px solid transparent',
-                  transition: 'background 0.1s',
+                  borderRadius: '12px',
+                  background: isSelected ? '#f3f4f6' : 'transparent',
+                  boxShadow: isSelected ? '0 1px 2px rgba(0,0,0,0.03)' : 'none',
+                  border: isSelected ? '1px solid #e2e8f0' : '1px solid transparent',
+                  transition: 'all 0.15s ease',
                 }}
                 onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.background = '#f9fafb'; }}
                 onMouseLeave={(e) => { if (!isSelected) e.currentTarget.style.background = 'transparent'; }}
               >
                 {/* Avatar circle with initials */}
                 <div style={{
-                  width: '32px',
-                  height: '32px',
+                  width: '34px',
+                  height: '34px',
                   borderRadius: '50%',
                   background: conv.contact.avatarColor,
                   display: 'flex',
@@ -207,18 +211,18 @@ export default function ChatList({
                   justifyContent: 'center',
                   color: 'white',
                   fontSize: '13px',
-                  fontWeight: 600,
+                  fontWeight: 700,
                   flexShrink: 0,
                 }}>
                   {conv.contact.initials}
                 </div>
 
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
                     <span style={{
                       fontSize: '13px',
-                      fontWeight: 600,
-                      color: isSelected ? '#4f46e5' : '#111827',
+                      fontWeight: 700,
+                      color: '#111827',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
@@ -240,25 +244,6 @@ export default function ChatList({
                     {conv.lastMessage}
                   </p>
                 </div>
-
-                {conv.unreadCount > 0 && (
-                  <span style={{
-                    flexShrink: 0,
-                    width: '18px',
-                    height: '18px',
-                    borderRadius: '50%',
-                    background: '#4f46e5',
-                    color: 'white',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '2px',
-                  }}>
-                    {conv.unreadCount}
-                  </span>
-                )}
               </div>
             );
           })

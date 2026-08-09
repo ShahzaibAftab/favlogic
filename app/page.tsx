@@ -7,11 +7,13 @@ import ChatList from '@/components/ChatList';
 import ChatWindow from '@/components/ChatWindow';
 import DetailsPanel from '@/components/DetailsPanel';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
+import DashboardSkeleton from '@/components/DashboardSkeleton';
 import { fetchConversations } from '@/lib/api';
 import { Conversation, FilterStatus, FilterSort, ActiveCategory, Message } from '@/types';
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isExtracting, setIsExtracting] = useState(true);
+  const [isDashboardLoading, setIsDashboardLoading] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,8 +33,18 @@ export default function Home() {
     }
     loadData();
 
-    const timer = setTimeout(() => setIsLoading(false), 2000);
-    return () => clearTimeout(timer);
+    // 1. Initial dark extraction loading (1.8s)
+    const timer1 = setTimeout(() => {
+      setIsExtracting(false);
+      setIsDashboardLoading(true);
+
+      // 2. 1-second Light Dashboard Skeleton loading (1s) matching Figma screenshot!
+      setTimeout(() => {
+        setIsDashboardLoading(false);
+      }, 1000);
+    }, 1800);
+
+    return () => clearTimeout(timer1);
   }, []);
 
   const activeConversation = useMemo(() => {
@@ -123,25 +135,35 @@ export default function Home() {
 
   return (
     <>
-      {/* Loading Screen */}
-      {isLoading && <LoadingSkeleton onComplete={() => setIsLoading(false)} />}
+      {/* 1. Initial Dark Extraction Screen */}
+      {isExtracting && <LoadingSkeleton onComplete={() => { setIsExtracting(false); setIsDashboardLoading(true); setTimeout(() => setIsDashboardLoading(false), 1000); }} />}
 
-      {/* Main App - light theme */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        background: '#ffffff',
-        overflow: 'hidden',
-        visibility: isLoading ? 'hidden' : 'visible',
-      }}>
-        <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* 2. 1-second Dashboard Skeleton loading matching user's uploaded image */}
+      {!isExtracting && isDashboardLoading && <DashboardSkeleton />}
 
-        <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-          <LeftSidebar
-            activeCategory={activeCategory}
-            onSelectCategory={setActiveCategory}
-          />
+      {/* 3. Main interactive app */}
+      {!isExtracting && !isDashboardLoading && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+          background: '#ffffff',
+          overflow: 'hidden',
+        }}>
+          <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+
+          <div style={{
+            display: 'flex',
+            flex: 1,
+            overflow: 'hidden',
+            background: '#d9dad5',
+            padding: '8px',
+            gap: '8px',
+          }}>
+            <LeftSidebar
+              activeCategory={activeCategory}
+              onSelectCategory={setActiveCategory}
+            />
 
           <ChatList
             conversations={filteredConversations}
@@ -176,6 +198,7 @@ export default function Home() {
           )}
         </div>
       </div>
+      )}
     </>
   );
 }

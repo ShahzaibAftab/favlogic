@@ -118,12 +118,14 @@ export default function DetailsPanel({
     <aside style={{
       width: '272px',
       flexShrink: 0,
-      borderLeft: '1px solid #e5e7eb',
+      borderRadius: '12px',
+      border: '1px solid #e2e8f0',
       background: '#ffffff',
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
       overflowY: 'auto',
+      overflowX: 'hidden',
     }}>
       {/* Header */}
       <div style={{
@@ -160,23 +162,24 @@ export default function DetailsPanel({
 
       {/* Contact Labels */}
       <Section title="Contact Labels">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: isAddingTag ? '8px' : '0' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', marginBottom: isAddingTag ? '8px' : '0' }}>
           {labels.map((label) => (
             <span
               key={label}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px',
-                padding: '3px 8px',
+                gap: '5px',
+                padding: '4px 10px',
                 borderRadius: '999px',
-                background: label === 'Closed Won' ? '#dbeafe' : '#d1fae5',
-                color: label === 'Closed Won' ? '#1d4ed8' : '#065f46',
+                background: '#f0f9ff',
+                color: '#0284c7',
                 fontSize: '11.5px',
-                fontWeight: 500,
-                border: label === 'Closed Won' ? '1px solid #bfdbfe' : '1px solid #a7f3d0',
+                fontWeight: 600,
+                border: '1px solid #0284c7',
               }}
             >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
               {label}
               <button
                 onClick={() => onRemoveLabel(label)}
@@ -192,11 +195,12 @@ export default function DetailsPanel({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '22px',
-              height: '22px',
+              width: '24px',
+              height: '24px',
               borderRadius: '50%',
-              background: '#f3f4f6',
-              border: '1px solid #e5e7eb',
+              background: '#ffffff',
+              border: '1px solid #0284c7',
+              color: '#0284c7',
               cursor: 'pointer',
             }}
           >
@@ -213,7 +217,7 @@ export default function DetailsPanel({
                 setIsAddingTag(false);
               }
             }}
-            style={{ display: 'flex', gap: '6px' }}
+            style={{ display: 'flex', gap: '6px', marginTop: '6px' }}
           >
             <input
               type="text"
@@ -230,7 +234,7 @@ export default function DetailsPanel({
                 outline: 'none',
               }}
             />
-            <button type="submit" style={{ padding: '4px 10px', background: '#6366f1', color: 'white', border: 'none', borderRadius: '6px', fontSize: '11px', cursor: 'pointer' }}>
+            <button type="submit" style={{ padding: '4px 10px', background: '#0284c7', color: 'white', border: 'none', borderRadius: '6px', fontSize: '11px', cursor: 'pointer' }}>
               Add
             </button>
           </form>
@@ -243,12 +247,11 @@ export default function DetailsPanel({
         <div style={{
           background: '#fef9c3',
           border: '1px solid #fde68a',
-          borderRadius: '6px',
-          padding: '8px 10px',
+          borderRadius: '8px',
+          padding: '8px 12px',
           marginBottom: '8px',
           fontSize: '12px',
-          color: '#92400e',
-          cursor: 'text',
+          color: '#854d0e',
         }}>
           <input
             type="text"
@@ -267,7 +270,7 @@ export default function DetailsPanel({
               border: 'none',
               outline: 'none',
               fontSize: '12px',
-              color: '#92400e',
+              color: '#854d0e',
             }}
           />
         </div>
@@ -276,13 +279,14 @@ export default function DetailsPanel({
           <div
             key={index}
             style={{
-              background: '#fef9c3',
-              border: '1px solid #fde68a',
-              borderRadius: '6px',
-              padding: '8px 10px',
+              background: '#fef08a',
+              border: '1px solid #fde047',
+              borderRadius: '8px',
+              padding: '10px 12px',
               marginBottom: '6px',
-              fontSize: '12px',
-              color: '#92400e',
+              fontSize: '12.5px',
+              fontWeight: 500,
+              color: '#713f12',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
@@ -292,7 +296,7 @@ export default function DetailsPanel({
             <span style={{ flex: 1, lineHeight: '1.4' }}>{note}</span>
             <button
               onClick={() => onRemoveNote(index)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', color: '#b45309', opacity: 0.6, flexShrink: 0, padding: 0 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', color: '#854d0e', opacity: 0.6, flexShrink: 0, padding: 0 }}
             >
               <XIcon />
             </button>
@@ -305,28 +309,26 @@ export default function DetailsPanel({
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           padding: '6px 0',
         }}>
           <div style={{
-            width: '28px',
-            height: '28px',
+            width: '26px',
+            height: '26px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #10b981, #059669)',
+            background: 'linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontSize: '11px',
-            fontWeight: 700,
             flexShrink: 0,
           }}>
-            F
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
               <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#111827' }}>Fit4Life</span>
-              <span style={{ fontSize: '11px', color: '#9ca3af' }}>08/06/25</span>
+              <span style={{ fontSize: '11px', color: '#9ca3af' }}>08/08/25</span>
             </div>
             <span style={{ fontSize: '11.5px', color: '#6b7280' }}>On my way!</span>
           </div>

@@ -113,7 +113,17 @@ export default function ChatWindow({ conversation, onSendMessage, onToggleDetail
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', background: '#ffffff', minWidth: 0 }}>
+    <div style={{
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      background: '#ffffff',
+      minWidth: 0,
+      borderRadius: '12px',
+      border: '1px solid #e2e8f0',
+      overflow: 'hidden',
+    }}>
       {/* Header */}
       <div style={{
         height: '52px',
@@ -176,9 +186,8 @@ export default function ChatWindow({ conversation, onSendMessage, onToggleDetail
           </span>
         </div>
 
-        {conversation.messages.map((msg: Message, idx: number) => {
+        {conversation.messages.map((msg: Message) => {
           const isMe = msg.isMe;
-          const showTime = true;
 
           return (
             <div
@@ -186,62 +195,41 @@ export default function ChatWindow({ conversation, onSendMessage, onToggleDetail
               className="fade-in"
               style={{
                 display: 'flex',
-                flexDirection: isMe ? 'row-reverse' : 'row',
-                alignItems: 'flex-start',
-                gap: '8px',
-                marginBottom: '8px',
-                maxWidth: '100%',
+                flexDirection: 'column',
+                alignItems: isMe ? 'flex-end' : 'flex-start',
+                marginBottom: '12px',
+                width: '100%',
               }}
             >
-              {/* For AI/agent messages on the right, show brand avatar */}
-              {isMe && (
-                <div style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
-                  flexShrink: 0,
-                  overflow: 'hidden',
-                  border: '2px solid #e5e7eb',
-                }}>
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(135deg, #1e293b, #334155)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                    <span style={{ color: 'white', fontSize: '9px', fontWeight: 700 }}>F4L</span>
-                  </div>
-                </div>
-              )}
+              {/* Timestamp above bubble */}
+              <div style={{
+                fontSize: '11px',
+                color: '#9ca3af',
+                marginBottom: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}>
+                {isMe && (
+                  <span style={{ color: '#0284c7', fontSize: '12px', fontWeight: 700 }}>✓✓</span>
+                )}
+                {msg.timestamp}
+              </div>
 
               {/* Bubble */}
-              <div style={{ maxWidth: '65%' }}>
-                {/* Timestamp above bubble */}
-                <div style={{
-                  fontSize: '10.5px',
-                  color: '#9ca3af',
-                  marginBottom: '3px',
-                  textAlign: isMe ? 'right' : 'left',
-                }}>
-                  {msg.timestamp}
-                  {isMe && msg.status === 'read' && (
-                    <span style={{ marginLeft: '4px', color: '#6366f1' }}>✓✓</span>
-                  )}
-                </div>
-                <div style={{
-                  padding: '10px 13px',
-                  borderRadius: isMe ? '14px 4px 14px 14px' : '4px 14px 14px 14px',
-                  background: isMe ? '#ede9fe' : '#f3f4f6',
-                  color: '#1f2937',
-                  fontSize: '13px',
-                  lineHeight: '1.5',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                }}>
-                  {msg.text}
-                </div>
+              <div style={{
+                maxWidth: '65%',
+                padding: '12px 16px',
+                borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                background: isMe ? '#f3e8ff' : '#f1f5f9',
+                color: '#1e293b',
+                fontSize: '13px',
+                lineHeight: '1.55',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+              }}>
+                {msg.text}
               </div>
             </div>
           );
