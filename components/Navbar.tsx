@@ -77,21 +77,21 @@ export default function Navbar({ activeTab = 'Inbox', onTabChange }: NavbarProps
     }}>
       {/* Left: Logo + Nav */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {/* heyy logo */}
+        {/* BOXpad logo */}
         <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
           <div style={{
             width: '28px',
             height: '28px',
-            background: 'linear-gradient(135deg, #f43f5e, #ec4899)',
+            background: 'linear-gradient(135deg, #2563eb, #06b6d4)',
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginRight: '4px',
+            marginRight: '6px',
           }}>
-            <span style={{ color: 'white', fontWeight: 800, fontSize: '11px', letterSpacing: '-0.5px' }}>hh</span>
+            <span style={{ color: 'white', fontWeight: 800, fontSize: '10px', letterSpacing: '-0.5px' }}>B</span>
           </div>
-          <span style={{ fontWeight: 700, fontSize: '14px', color: '#f43f5e', letterSpacing: '-0.3px' }}>heyy</span>
+          <span style={{ fontWeight: 700, fontSize: '14px', color: '#1e40af', letterSpacing: '-0.3px' }}>BOXpad</span>
         </div>
 
         {/* Nav tabs */}
