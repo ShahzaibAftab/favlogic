@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Conversation, Message } from '@/types';
 
 interface ChatWindowProps {
@@ -87,15 +87,17 @@ const MicIcon = () => (
   </svg>
 );
 
-const CheckCheck = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-    <polyline points="20 6 9 17 4 12" style={{ transform: 'translateX(-4px)' }}/>
-  </svg>
-);
-
 export default function ChatWindow({ conversation, onSendMessage, onToggleDetails, isDetailsOpen }: ChatWindowProps) {
   const [inputText, setInputText] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = (smooth = true) => {
+    messagesEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+  };
+
+  useEffect(() => {
+    scrollToBottom(true);
+  }, [conversation?.messages?.length, conversation?.id]);
 
   if (!conversation) {
     return (
@@ -110,6 +112,7 @@ export default function ChatWindow({ conversation, onSendMessage, onToggleDetail
     if (!inputText.trim()) return;
     onSendMessage(inputText.trim());
     setInputText('');
+    setTimeout(() => scrollToBottom(true), 50);
   };
 
   return (
@@ -195,31 +198,33 @@ export default function ChatWindow({ conversation, onSendMessage, onToggleDetail
               className="fade-in"
               style={{
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: isMe ? 'flex-end' : 'flex-start',
+                justifyContent: isMe ? 'flex-end' : 'flex-start',
+                alignItems: 'flex-end',
+                gap: '8px',
                 marginBottom: '12px',
                 width: '100%',
               }}
             >
-              {/* Timestamp above bubble */}
-              <div style={{
-                fontSize: '11px',
-                color: '#9ca3af',
-                marginBottom: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}>
-                {isMe && (
+              {isMe && (
+                <div style={{
+                  fontSize: '11px',
+                  color: '#9ca3af',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  whiteSpace: 'nowrap',
+                  marginBottom: '2px',
+                  flexShrink: 0,
+                }}>
                   <span style={{ color: '#0284c7', fontSize: '12px', fontWeight: 700 }}>✓✓</span>
-                )}
-                {msg.timestamp}
-              </div>
+                  {msg.timestamp}
+                </div>
+              )}
 
-              {/* Bubble */}
+              {/* Message Bubble */}
               <div style={{
                 maxWidth: '65%',
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                 background: isMe ? '#f3e8ff' : '#f1f5f9',
                 color: '#1e293b',
@@ -231,9 +236,22 @@ export default function ChatWindow({ conversation, onSendMessage, onToggleDetail
               }}>
                 {msg.text}
               </div>
+
+              {!isMe && (
+                <div style={{
+                  fontSize: '11px',
+                  color: '#9ca3af',
+                  whiteSpace: 'nowrap',
+                  marginBottom: '2px',
+                  flexShrink: 0,
+                }}>
+                  {msg.timestamp}
+                </div>
+              )}
             </div>
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Composer */}
