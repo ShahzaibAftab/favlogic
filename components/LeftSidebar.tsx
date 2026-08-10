@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ActiveCategory } from '@/types';
 
 interface SidebarUser {
@@ -23,13 +23,21 @@ const USERS: SidebarUser[] = [
 interface LeftSidebarProps {
   activeCategory: ActiveCategory;
   onSelectCategory: (category: ActiveCategory) => void;
+  isDrawer?: boolean;
+  onCloseDrawer?: () => void;
 }
 
-export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSidebarProps) {
+export default function LeftSidebar({
+  activeCategory,
+  onSelectCategory,
+  isDrawer = false,
+  onCloseDrawer,
+}: LeftSidebarProps) {
   const [teamsOpen, setTeamsOpen] = useState(true);
   const [usersOpen, setUsersOpen] = useState(false);
   const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [channelsOpen, setChannelsOpen] = useState(true);
+  const [filterQuery, setFilterQuery] = useState('');
 
   const handleToggleUsers = () => {
     if (usersOpen) {
@@ -44,11 +52,17 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
     }
   };
 
+  const filteredUsers = useMemo(() => {
+    if (!filterQuery.trim()) return USERS;
+    return USERS.filter((u) => u.name.toLowerCase().includes(filterQuery.toLowerCase()));
+  }, [filterQuery]);
+
   const menuItemStyle = (isActive: boolean) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '8px 10px',
+    padding: '10px 12px',
+    minHeight: '40px',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '13px',
@@ -66,8 +80,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
   const badgeStyle = {
     fontSize: '11px',
     color: '#6b7280',
-    fontWeight: 400,
-    minWidth: '16px',
+    fontWeight: 500,
+    minWidth: '18px',
     textAlign: 'right' as const,
   };
 
@@ -75,7 +89,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '6px 10px',
+    padding: '8px 10px',
+    minHeight: '36px',
     cursor: 'pointer',
     fontSize: '13px',
     fontWeight: 600,
@@ -117,29 +132,104 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
     </svg>
   );
 
+  const XIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  );
+
+  const SearchIcon = () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  );
+
+  const handleCategoryClick = (cat: ActiveCategory) => {
+    onSelectCategory(cat);
+    if (isDrawer && onCloseDrawer) {
+      onCloseDrawer();
+    }
+  };
+
   return (
-    <aside style={{
-      width: '180px',
-      flexShrink: 0,
-      borderRadius: '12px',
-      border: '1px solid #e2e8f0',
-      background: '#ffffff',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      padding: '12px 10px',
-    }}>
-      {/* Inbox section title */}
-      <div style={{ padding: '4px 10px 8px', fontSize: '14px', fontWeight: 700, color: '#111827' }}>
-        Inbox
+    <aside
+      aria-label="Sidebar Navigation"
+      style={{
+        width: isDrawer ? '260px' : '180px',
+        flexShrink: 0,
+        borderRadius: isDrawer ? '0 12px 12px 0' : '12px',
+        border: '1px solid #e2e8f0',
+        background: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        padding: '12px 10px',
+        boxShadow: isDrawer ? '4px 0 24px rgba(0,0,0,0.12)' : 'none',
+      }}
+      className="touch-scroll"
+    >
+      {/* Header with Title + Close button if drawer */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 10px 8px' }}>
+        <span style={{ fontSize: '14px', fontWeight: 700, color: '#111827' }}>Inbox</span>
+        {isDrawer && onCloseDrawer && (
+          <button
+            onClick={onCloseDrawer}
+            aria-label="Close navigation sidebar"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '6px',
+            }}
+          >
+            <XIcon />
+          </button>
+        )}
+      </div>
+
+      {/* Quick search/filter input inside sidebar */}
+      <div style={{ padding: '0 4px 8px' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: '#f9fafb',
+          border: '1px solid #e5e7eb',
+          borderRadius: '6px',
+          padding: '4px 8px',
+        }}>
+          <SearchIcon />
+          <input
+            type="text"
+            value={filterQuery}
+            onChange={(e) => setFilterQuery(e.target.value)}
+            placeholder="Filter view..."
+            style={{
+              width: '100%',
+              border: 'none',
+              background: 'none',
+              outline: 'none',
+              fontSize: '11.5px',
+              color: '#374151',
+            }}
+          />
+        </div>
       </div>
 
       {/* Main inbox views */}
       <button
         style={menuItemStyle(activeCategory === 'my_inbox')}
-        onClick={() => onSelectCategory('my_inbox')}
+        onClick={() => handleCategoryClick('my_inbox')}
+        aria-label="My Inbox"
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <PersonIcon />
@@ -149,7 +239,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
 
       <button
         style={menuItemStyle(activeCategory === 'all')}
-        onClick={() => onSelectCategory('all')}
+        onClick={() => handleCategoryClick('all')}
+        aria-label="All conversations"
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <UsersIcon />
@@ -160,7 +251,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
 
       <button
         style={menuItemStyle(activeCategory === 'unassigned')}
-        onClick={() => onSelectCategory('unassigned')}
+        onClick={() => handleCategoryClick('unassigned')}
+        aria-label="Unassigned conversations"
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <UnassignedIcon />
@@ -171,7 +263,7 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
 
       {/* Teams */}
       <div style={{ marginTop: '8px' }}>
-        <button style={sectionHeaderStyle} onClick={() => setTeamsOpen(!teamsOpen)}>
+        <button style={sectionHeaderStyle} onClick={() => setTeamsOpen(!teamsOpen)} aria-label="Toggle Teams section">
           Teams
           <span style={{ color: '#9ca3af', transform: teamsOpen ? 'rotate(0)' : 'rotate(-90deg)', transition: 'transform 0.2s' }}>
             <ChevronDown />
@@ -182,7 +274,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
           <>
             <button
               style={menuItemStyle(activeCategory === 'sales')}
-              onClick={() => onSelectCategory('sales')}
+              onClick={() => handleCategoryClick('sales')}
+              aria-label="Sales team conversations"
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', flexShrink: 0 }} />
@@ -193,7 +286,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
 
             <button
               style={menuItemStyle(activeCategory === 'customer_support')}
-              onClick={() => onSelectCategory('customer_support')}
+              onClick={() => handleCategoryClick('customer_support')}
+              aria-label="Customer Support team conversations"
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366f1', flexShrink: 0 }} />
@@ -207,7 +301,7 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
 
       {/* Users */}
       <div style={{ marginTop: '8px' }}>
-        <button style={sectionHeaderStyle} onClick={handleToggleUsers}>
+        <button style={sectionHeaderStyle} onClick={handleToggleUsers} aria-label="Toggle Users section">
           Users
           <span style={{ color: '#9ca3af', transform: usersOpen ? 'rotate(0)' : 'rotate(-90deg)', transition: 'transform 0.2s' }}>
             <ChevronDown />
@@ -232,14 +326,15 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
               ))}
             </div>
           ) : (
-            USERS.map((user) => (
+            filteredUsers.map((user) => (
               <div
                 key={user.name}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  padding: '5px 10px',
+                  padding: '6px 10px',
+                  minHeight: '36px',
                   cursor: 'pointer',
                   fontSize: '12.5px',
                   color: '#374151',
@@ -249,7 +344,7 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#f9fafb')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '90px' }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '120px' }}>
                   {user.name}
                 </span>
                 {user.count !== undefined && (
@@ -263,7 +358,7 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
 
       {/* Channels */}
       <div style={{ marginTop: '8px' }}>
-        <button style={sectionHeaderStyle} onClick={() => setChannelsOpen(!channelsOpen)}>
+        <button style={sectionHeaderStyle} onClick={() => setChannelsOpen(!channelsOpen)} aria-label="Toggle Channels section">
           Channels
           <span style={{ color: '#9ca3af', transform: channelsOpen ? 'rotate(0)' : 'rotate(-90deg)', transition: 'transform 0.2s' }}>
             <ChevronDown />
@@ -276,7 +371,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '5px 8px',
+              padding: '6px 10px',
+              minHeight: '36px',
               cursor: 'pointer',
               fontSize: '12.5px',
               color: '#374151',
@@ -304,7 +400,8 @@ export default function LeftSidebar({ activeCategory, onSelectCategory }: LeftSi
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '5px 8px',
+              padding: '6px 10px',
+              minHeight: '36px',
               cursor: 'pointer',
               fontSize: '12.5px',
               color: '#374151',

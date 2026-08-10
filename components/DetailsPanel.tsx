@@ -12,6 +12,7 @@ interface DetailsPanelProps {
   onAddNote: (note: string) => void;
   onRemoveNote: (index: number) => void;
   onClose: () => void;
+  isDrawer?: boolean;
 }
 
 const ChevronDown = () => (
@@ -27,23 +28,26 @@ const PersonCircleIcon = () => (
   </svg>
 );
 
-const ExpandIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-  </svg>
-);
-
 const PlusIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
   </svg>
 );
 
 const XIcon = () => (
-  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
   </svg>
 );
+
+const ClockIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+
+const TAG_SUGGESTIONS = ['VIP', 'Lead', 'Support', 'High Priority', 'Feedback'];
 
 interface SectionProps {
   title: string;
@@ -57,6 +61,7 @@ function Section({ title, children, defaultOpen = true }: SectionProps) {
     <div style={{ borderBottom: '1px solid #f3f4f6' }}>
       <button
         onClick={() => setOpen(!open)}
+        aria-label={`Toggle section ${title}`}
         style={{
           width: '100%',
           display: 'flex',
@@ -90,12 +95,25 @@ export default function DetailsPanel({
   onAddNote,
   onRemoveNote,
   onClose,
+  isDrawer = false,
 }: DetailsPanelProps) {
   const [newLabelInput, setNewLabelInput] = useState('');
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [newNoteInput, setNewNoteInput] = useState('');
+  const [deletingNoteIndex, setDeletingNoteIndex] = useState<number | null>(null);
 
   if (!contact) return null;
+
+  const handleAddTagSuggestion = (tag: string) => {
+    if (!labels.includes(tag)) {
+      onAddLabel(tag);
+    }
+  };
+
+  const handleAddTimestampToNote = () => {
+    const timeString = `[${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}] `;
+    setNewNoteInput((prev) => timeString + prev);
+  };
 
   const fieldRow = (label: string, value: string) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '8px' }}>
@@ -115,18 +133,30 @@ export default function DetailsPanel({
   );
 
   return (
-    <aside style={{
-      width: '272px',
-      flexShrink: 0,
-      borderRadius: '12px',
-      border: '1px solid #e2e8f0',
-      background: '#ffffff',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-    }}>
+    <aside
+      aria-label="Contact details panel"
+      style={{
+        width: isDrawer ? '280px' : '272px',
+        flexShrink: 0,
+        borderRadius: isDrawer ? '12px 0 0 12px' : '12px',
+        border: '1px solid #e2e8f0',
+        background: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        boxShadow: isDrawer ? '-4px 0 24px rgba(0,0,0,0.12)' : 'none',
+      }}
+      className="touch-scroll"
+    >
+      {/* Drawer drag handle for mobile aesthetics */}
+      {isDrawer && (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '6px 0 0' }}>
+          <div style={{ width: '36px', height: '4px', borderRadius: '999px', background: '#cbd5e1' }} />
+        </div>
+      )}
+
       {/* Header */}
       <div style={{
         height: '52px',
@@ -138,8 +168,12 @@ export default function DetailsPanel({
         flexShrink: 0,
       }}>
         <span style={{ fontSize: '14px', fontWeight: 700, color: '#111827' }}>Details</span>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
-          <ExpandIcon />
+        <button
+          onClick={onClose}
+          aria-label="Close details panel"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex', padding: '4px', borderRadius: '6px' }}
+        >
+          <XIcon />
         </button>
       </div>
 
@@ -155,14 +189,14 @@ export default function DetailsPanel({
         {fieldRow('Last Name', contact.lastName)}
         {fieldRow('Phone number', contact.phone)}
         {fieldRow('Email', contact.email)}
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', color: '#6366f1', padding: 0, marginTop: '4px' }}>
-          See all
+        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', color: '#0284c7', fontWeight: 600, padding: 0, marginTop: '4px' }}>
+          See all details
         </button>
       </Section>
 
       {/* Contact Labels */}
       <Section title="Contact Labels">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', marginBottom: isAddingTag ? '8px' : '0' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', marginBottom: '8px' }}>
           {labels.map((label) => (
             <span
               key={label}
@@ -183,7 +217,8 @@ export default function DetailsPanel({
               {label}
               <button
                 onClick={() => onRemoveLabel(label)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0, color: 'inherit', opacity: 0.6 }}
+                aria-label={`Remove tag ${label}`}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0, color: 'inherit', opacity: 0.7 }}
               >
                 <XIcon />
               </button>
@@ -191,12 +226,13 @@ export default function DetailsPanel({
           ))}
           <button
             onClick={() => setIsAddingTag(!isAddingTag)}
+            aria-label="Add new label"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '24px',
-              height: '24px',
+              width: '26px',
+              height: '26px',
               borderRadius: '50%',
               background: '#ffffff',
               border: '1px solid #0284c7',
@@ -207,6 +243,31 @@ export default function DetailsPanel({
             <PlusIcon />
           </button>
         </div>
+
+        {/* Tag Suggestions */}
+        <div style={{ marginBottom: '8px' }}>
+          <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 500, marginBottom: '4px' }}>Suggested Tags:</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+            {TAG_SUGGESTIONS.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => handleAddTagSuggestion(tag)}
+                style={{
+                  fontSize: '10.5px',
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: labels.includes(tag) ? '#e0f2fe' : '#f8fafc',
+                  border: '1px solid #cbd5e1',
+                  color: labels.includes(tag) ? '#0369a1' : '#475569',
+                  cursor: 'pointer',
+                }}
+              >
+                + {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {isAddingTag && (
           <form
             onSubmit={(e) => {
@@ -223,18 +284,22 @@ export default function DetailsPanel({
               type="text"
               value={newLabelInput}
               onChange={(e) => setNewLabelInput(e.target.value)}
-              placeholder="Tag name..."
+              placeholder="Custom tag name..."
               autoFocus
+              aria-label="Custom tag input"
               style={{
                 flex: 1,
                 fontSize: '12px',
-                padding: '4px 8px',
+                padding: '5px 8px',
                 border: '1px solid #d1d5db',
                 borderRadius: '6px',
                 outline: 'none',
               }}
             />
-            <button type="submit" style={{ padding: '4px 10px', background: '#0284c7', color: 'white', border: 'none', borderRadius: '6px', fontSize: '11px', cursor: 'pointer' }}>
+            <button
+              type="submit"
+              style={{ padding: '5px 12px', background: '#0284c7', color: 'white', border: 'none', borderRadius: '6px', fontSize: '11.5px', fontWeight: 600, cursor: 'pointer' }}
+            >
               Add
             </button>
           </form>
@@ -243,16 +308,38 @@ export default function DetailsPanel({
 
       {/* Notes */}
       <Section title="Notes">
-        {/* "Add a note" input area */}
+        {/* Note Input area */}
         <div style={{
           background: '#fef9c3',
           border: '1px solid #fde68a',
           borderRadius: '8px',
           padding: '8px 12px',
           marginBottom: '8px',
-          fontSize: '12px',
-          color: '#854d0e',
         }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+            <span style={{ fontSize: '11px', color: '#854d0e', fontWeight: 600 }}>New Note</span>
+            <button
+              type="button"
+              onClick={handleAddTimestampToNote}
+              aria-label="Insert current timestamp into note"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                fontSize: '10.5px',
+                color: '#854d0e',
+                background: '#fef08a',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '2px 6px',
+                cursor: 'pointer',
+                fontWeight: 500,
+              }}
+            >
+              <ClockIcon />
+              Time
+            </button>
+          </div>
           <input
             type="text"
             value={newNoteInput}
@@ -263,14 +350,15 @@ export default function DetailsPanel({
                 setNewNoteInput('');
               }
             }}
-            placeholder="Add a note"
+            placeholder="Type a note & press Enter..."
+            aria-label="Add note input"
             style={{
               width: '100%',
               background: 'none',
               border: 'none',
               outline: 'none',
               fontSize: '12px',
-              color: '#854d0e',
+              color: '#713f12',
             }}
           />
         </div>
@@ -288,18 +376,54 @@ export default function DetailsPanel({
               fontWeight: 500,
               color: '#713f12',
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
+              flexDirection: 'column',
               gap: '6px',
             }}
           >
-            <span style={{ flex: 1, lineHeight: '1.4' }}>{note}</span>
-            <button
-              onClick={() => onRemoveNote(index)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', color: '#854d0e', opacity: 0.6, flexShrink: 0, padding: 0 }}
-            >
-              <XIcon />
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '6px' }}>
+              <span style={{ flex: 1, lineHeight: '1.4', wordBreak: 'break-word' }}>{note}</span>
+              {deletingNoteIndex !== index && (
+                <button
+                  onClick={() => setDeletingNoteIndex(index)}
+                  aria-label="Delete note"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', color: '#854d0e', opacity: 0.7, flexShrink: 0, padding: 0 }}
+                >
+                  <XIcon />
+                </button>
+              )}
+            </div>
+
+            {/* Inline Delete Confirmation */}
+            {deletingNoteIndex === index && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: '#fef9c3',
+                padding: '4px 8px',
+                borderRadius: '6px',
+                fontSize: '11px',
+              }}>
+                <span>Delete note?</span>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button
+                    onClick={() => {
+                      onRemoveNote(index);
+                      setDeletingNoteIndex(null);
+                    }}
+                    style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 6px', cursor: 'pointer', fontWeight: 600 }}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    onClick={() => setDeletingNoteIndex(null)}
+                    style={{ background: '#e2e8f0', color: '#334155', border: 'none', borderRadius: '4px', padding: '2px 6px', cursor: 'pointer' }}
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </Section>
