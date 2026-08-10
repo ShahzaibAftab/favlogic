@@ -8,6 +8,7 @@ import ChatWindow from '@/components/ChatWindow';
 import DetailsPanel from '@/components/DetailsPanel';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
 import DashboardSkeleton from '@/components/DashboardSkeleton';
+import MobileDashboardSkeleton from '@/components/MobileDashboardSkeleton';
 import { fetchConversations } from '@/lib/api';
 import { Conversation, FilterStatus, FilterSort, ActiveCategory, Message } from '@/types';
 
@@ -238,7 +239,7 @@ export default function Home() {
 
   return (
     <>
-      {/* 1. Initial Dark Extraction Screen */}
+      {/* 1. Initial Dark Extraction Screen (Responsive for mobile, tablet & desktop) */}
       {isExtracting && (
         <LoadingSkeleton
           onComplete={() => {
@@ -249,8 +250,10 @@ export default function Home() {
         />
       )}
 
-      {/* 2. Dashboard Skeleton loading */}
-      {!isExtracting && isDashboardLoading && <DashboardSkeleton />}
+      {/* 2. Light Dashboard Skeleton loading: MobileDashboardSkeleton on Mobile, DashboardSkeleton on Desktop/Tablet */}
+      {!isExtracting && isDashboardLoading && (
+        isMobile ? <MobileDashboardSkeleton /> : <DashboardSkeleton />
+      )}
 
       {/* 3. Main interactive app */}
       {!isExtracting && !isDashboardLoading && (
@@ -429,7 +432,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* D. MOBILE BOTTOM NAVIGATION (Fixed at bottom on <768px when on list view or main tabs) */}
+          {/* D. MOBILE BOTTOM NAVIGATION */}
           {isMobile && (
             <nav
               aria-label="Mobile Navigation Bar"
