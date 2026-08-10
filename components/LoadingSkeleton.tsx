@@ -8,9 +8,10 @@ interface LoadingSkeletonProps {
 }
 
 // Hexagon icon wrapper with animated clockwise gradient border (#007AEC1F) & floating motion
-function HexIcon({ src, style, delay = 0 }: { src: string; style: React.CSSProperties; delay?: number }) {
+function HexIcon({ src, style, delay = 0, className = '' }: { src: string; style: React.CSSProperties; delay?: number; className?: string }) {
   return (
     <div
+      className={className}
       style={{
         position: 'absolute',
         animation: 'hexFloat 4.5s ease-in-out infinite',
@@ -25,8 +26,8 @@ function HexIcon({ src, style, delay = 0 }: { src: string; style: React.CSSPrope
       <div
         style={{
           position: 'relative',
-          width: '80px',
-          height: '80px',
+          width: '70px',
+          height: '70px',
           clipPath: 'polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%)',
           filter: 'drop-shadow(0 0 10px rgba(0, 122, 236, 0.35))',
           overflow: 'hidden',
@@ -39,8 +40,8 @@ function HexIcon({ src, style, delay = 0 }: { src: string; style: React.CSSPrope
         <div
           style={{
             position: 'absolute',
-            width: '140px',
-            height: '140px',
+            width: '130px',
+            height: '130px',
             background: 'conic-gradient(from 0deg, #007aec 0deg, rgba(0, 122, 236, 0.55) 120deg, #007aec1f 240deg, #007aec 360deg)',
             animation: 'hexSpin 4s linear infinite',
           }}
@@ -62,9 +63,9 @@ function HexIcon({ src, style, delay = 0 }: { src: string; style: React.CSSPrope
           <Image
             src={src}
             alt=""
-            width={72}
-            height={72}
-            style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+            width={60}
+            height={60}
+            style={{ width: '48px', height: '48px', objectFit: 'contain' }}
             priority
           />
         </div>
@@ -101,11 +102,11 @@ function GlowingRingCanvas() {
     const particleCount = 220;
     const particles = Array.from({ length: particleCount }, () => {
       const angle = Math.random() * Math.PI * 2;
-      const radialOffset = (Math.random() - 0.5) * 22; // spread around ring
+      const radialOffset = (Math.random() - 0.5) * 22;
       const speed = (0.003 + Math.random() * 0.008) * (Math.random() > 0.5 ? 1 : -1);
       const size = 0.6 + Math.random() * 1.5;
       const alpha = 0.2 + Math.random() * 0.7;
-      const colorHue = Math.random() > 0.3 ? 200 + Math.random() * 20 : 220 + Math.random() * 30; // Electric blues
+      const colorHue = Math.random() > 0.3 ? 200 + Math.random() * 20 : 220 + Math.random() * 30;
       return { angle, radialOffset, speed, size, alpha, colorHue };
     });
 
@@ -125,7 +126,7 @@ function GlowingRingCanvas() {
       ctx.arc(cx, cy, baseRadius + 45, 0, Math.PI * 2);
       ctx.fill();
 
-      // 2. Swirling Wave Threads (3D energy flow texture inside ring)
+      // 2. Swirling Wave Threads
       const threadCount = 14;
       for (let i = 0; i < threadCount; i++) {
         const radius = baseRadius - 12 + i * 1.8;
@@ -133,7 +134,6 @@ function GlowingRingCanvas() {
 
         const step = 0.05;
         for (let a = 0; a <= Math.PI * 2 + step; a += step) {
-          // Harmonic wave distortion
           const wave1 = Math.sin(a * 3 + time * 1.2 + i * 0.4) * 3.5;
           const wave2 = Math.cos(a * 5 - time * 0.8 + i * 0.2) * 2.0;
           const r = radius + wave1 + wave2;
@@ -168,10 +168,10 @@ function GlowingRingCanvas() {
         ctx.shadowColor = 'rgba(56, 189, 248, 0.8)';
         ctx.shadowBlur = 4;
         ctx.fill();
-        ctx.shadowBlur = 0; // reset shadow
+        ctx.shadowBlur = 0;
       });
 
-      // 4. Sharp Bright Electric Rim Arc (Lower rim specular highlight)
+      // 4. Sharp Bright Electric Rim Arc
       const rimGradient = ctx.createConicGradient(time * 0.5, cx, cy);
       rimGradient.addColorStop(0.0, 'rgba(56, 189, 248, 0.9)');
       rimGradient.addColorStop(0.25, 'rgba(255, 255, 255, 0.95)');
@@ -195,7 +195,7 @@ function GlowingRingCanvas() {
       ctx.strokeStyle = 'rgba(186, 230, 253, 0.4)';
       ctx.stroke();
 
-      // 5. Dark Center Void (Keep middle clean & dark)
+      // 5. Dark Center Void
       const innerVoidGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius - 16);
       innerVoidGradient.addColorStop(0, 'rgba(5, 10, 26, 0.95)');
       innerVoidGradient.addColorStop(0.8, 'rgba(5, 10, 26, 0.7)');
@@ -220,8 +220,8 @@ function GlowingRingCanvas() {
     <canvas
       ref={canvasRef}
       style={{
-        width: '260px',
-        height: '260px',
+        width: '100%',
+        height: '100%',
         display: 'block',
       }}
     />
@@ -232,7 +232,6 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
   const [opacity, setOpacity] = useState(0);
 
   useEffect(() => {
-    // Fade in
     const t1 = setTimeout(() => setOpacity(1), 100);
     return () => clearTimeout(t1);
   }, []);
@@ -266,7 +265,6 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
           borderRadius: '50%',
         }}
       />
-      {/* Subtle bottom-left dark overlay for depth */}
       <div
         style={{
           position: 'absolute',
@@ -279,19 +277,13 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         }}
       />
 
-      {/* ---- Floating hexagon icon tiles ---- */}
-      {/* Top-left: sparkles */}
-      <HexIcon src="/icons/icon-sparkles.png" delay={0} style={{ top: '7%', left: '17%' }} />
-      {/* Mid-left: inbox */}
-      <HexIcon src="/icons/icon-inbox.png" delay={0.8} style={{ top: '28%', left: '8%' }} />
-      {/* Bottom-left: person */}
-      <HexIcon src="/icons/icon-person.png" delay={1.6} style={{ top: '43%', left: '18%' }} />
-      {/* Top-right: person (large) */}
-      <HexIcon src="/icons/icon-person.png" delay={2.4} style={{ top: '6%', right: '8%', width: '88px', height: '88px' }} />
-      {/* Mid-right: org chart */}
-      <HexIcon src="/icons/icon-org.png" delay={1.2} style={{ top: '22%', right: '18%' }} />
-      {/* Right-lower: refresh */}
-      <HexIcon src="/icons/icon-sparkles.png" delay={2.0} style={{ top: '40%', right: '8%' }} />
+      {/* ---- Floating hexagon icon tiles (Responsive positioning) ---- */}
+      <HexIcon src="/icons/icon-sparkles.png" delay={0} style={{ top: '6%', left: '8%' }} className="hidden sm:flex" />
+      <HexIcon src="/icons/icon-inbox.png" delay={0.8} style={{ top: '26%', left: '4%' }} />
+      <HexIcon src="/icons/icon-person.png" delay={1.6} style={{ top: '48%', left: '10%' }} className="hidden md:flex" />
+      <HexIcon src="/icons/icon-person.png" delay={2.4} style={{ top: '5%', right: '6%' }} />
+      <HexIcon src="/icons/icon-org.png" delay={1.2} style={{ top: '24%', right: '5%' }} />
+      <HexIcon src="/icons/icon-sparkles.png" delay={2.0} style={{ top: '46%', right: '8%' }} className="hidden md:flex" />
 
       {/* ---- Main content area ---- */}
       <div
@@ -299,18 +291,20 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          paddingTop: '8vh',
+          paddingTop: '5vh',
           zIndex: 10,
           position: 'relative',
+          width: '100%',
+          maxWidth: '500px',
         }}
       >
         {/* Dynamic Glowing Particle-Wave Portal Ring */}
         <div
           style={{
             position: 'relative',
-            width: '260px',
-            height: '260px',
-            marginBottom: '24px',
+            width: 'clamp(180px, 45vw, 240px)',
+            height: 'clamp(180px, 45vw, 240px)',
+            marginBottom: '18px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -322,13 +316,13 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         {/* Heading */}
         <h1
           style={{
-            fontSize: 'clamp(24px, 5vw, 38px)',
+            fontSize: 'clamp(22px, 5vw, 36px)',
             fontWeight: 700,
             color: '#ffffff',
-            margin: '0 0 12px',
+            margin: '0 0 10px',
             textAlign: 'center',
             letterSpacing: '-0.02em',
-            lineHeight: 1.1,
+            lineHeight: 1.15,
             padding: '0 16px',
           }}
         >
@@ -338,27 +332,29 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         {/* Subtitle */}
         <p
           style={{
-            fontSize: 'clamp(13px, 3.5vw, 15px)',
-            color: 'rgba(200,220,255,0.6)',
+            fontSize: 'clamp(12.5px, 3.5vw, 14.5px)',
+            color: 'rgba(200,220,255,0.7)',
             textAlign: 'center',
             margin: 0,
-            maxWidth: '360px',
-            lineHeight: 1.6,
-            padding: '0 16px',
+            maxWidth: '340px',
+            lineHeight: 1.55,
+            padding: '0 20px',
           }}
         >
           We are extracting information from the above honey combs to your system
         </p>
       </div>
 
-      {/* ---- Dashboard preview card below ---- */}
+      {/* ---- Dashboard preview card below (Responsive layout) ---- */}
+
+      {/* Desktop Preview Card (>=768px) */}
       <div
         style={{
           position: 'absolute',
           bottom: 0,
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '82vw',
+          width: '85vw',
           maxWidth: '1100px',
           background: '#ffffff',
           borderRadius: '16px 16px 0 0',
@@ -366,41 +362,18 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
           boxShadow: '0 -8px 48px rgba(0,80,255,0.18)',
           zIndex: 5,
         }}
+        className="hidden md:block"
       >
         {/* Mini Navbar */}
-        <div
-          style={{
-            height: '44px',
-            borderBottom: '1px solid #e5e7eb',
-            background: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 16px',
-            gap: '4px',
-          }}
-        >
-          {/* BOXpad brand */}
+        <div style={{ height: '44px', borderBottom: '1px solid #e5e7eb', background: '#ffffff', display: 'flex', alignItems: 'center', padding: '0 16px', gap: '4px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginRight: '12px' }}>
-            <div style={{ width: '22px', height: '22px', background: 'linear-gradient(135deg, #2563eb, #06b6d4)', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '22px', height: '22px', background: 'linear-gradient(135deg, #0284c7, #06b6d4)', borderRadius: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: 'white', fontWeight: 800, fontSize: '9px' }}>B</span>
             </div>
-            <span style={{ fontWeight: 700, fontSize: '13px', color: '#1e40af' }}>BOXpad</span>
+            <span style={{ fontWeight: 700, fontSize: '13px', color: '#0284c7' }}>BOXpad</span>
           </div>
           {['Inbox', 'Contacts', 'AI Employees', 'Workflows', 'Campaigns'].map((tab, i) => (
-            <div
-              key={tab}
-              style={{
-                padding: '4px 8px',
-                borderRadius: '5px',
-                fontSize: '11px',
-                fontWeight: i === 0 ? 600 : 400,
-                color: i === 0 ? '#111827' : '#6b7280',
-                background: i === 0 ? '#f3f4f6' : 'transparent',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
-            >
+            <div key={tab} style={{ padding: '4px 8px', borderRadius: '5px', fontSize: '11px', fontWeight: i === 0 ? 600 : 400, color: i === 0 ? '#111827' : '#6b7280', background: i === 0 ? '#f3f4f6' : 'transparent', display: 'flex', alignItems: 'center', gap: '4px' }}>
               {tab}
             </div>
           ))}
@@ -414,8 +387,7 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         </div>
 
         {/* Mini Dashboard body */}
-        <div style={{ display: 'flex', height: '220px' }}>
-          {/* Sidebar skeleton */}
+        <div style={{ display: 'flex', height: '200px' }}>
           <div style={{ width: '150px', borderRight: '1px solid #f3f4f6', padding: '10px', flexShrink: 0 }}>
             <div style={{ fontWeight: 700, fontSize: '12px', color: '#111827', marginBottom: '8px', paddingLeft: '4px' }}>Inbox</div>
             {['My Inbox', 'All  28', 'Unassigned  5'].map((item) => (
@@ -423,17 +395,8 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
                 {item}
               </div>
             ))}
-            <div style={{ fontWeight: 600, fontSize: '10px', color: '#111827', marginTop: '8px', padding: '4px 4px', display: 'flex', justifyContent: 'space-between' }}>
-              Teams <span style={{ color: '#9ca3af' }}>∨</span>
-            </div>
-            {['Sales  7', 'Customer Support  16'].map((item) => (
-              <div key={item} style={{ padding: '3px 8px', fontSize: '10px', color: '#374151', display: 'flex', justifyContent: 'space-between' }}>
-                {item}
-              </div>
-            ))}
           </div>
 
-          {/* Chat list skeleton */}
           <div style={{ width: '220px', borderRight: '1px solid #f3f4f6', padding: '8px', flexShrink: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '6px', justifyContent: 'space-between' }}>
               <span style={{ fontSize: '11px', fontWeight: 600, color: '#111827' }}>Michael Johnson</span>
@@ -442,81 +405,112 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
             {[
               { name: 'Olivia Mckinsey', time: '23:23', msg: "Oh my god 🤩 I'll try it ASAP, thank...", color: '#0891b2', init: 'O', selected: true },
               { name: 'Sara Williams', time: '23:16', msg: 'Good Evening, Emily! Hope yo...', color: '#6366f1', init: 'E', selected: false },
-              { name: 'Frank Thompson', time: '22:28', msg: 'Thank you for signing up Frank! If t...', color: '#4f46e5', init: 'F', selected: false },
             ].map((conv) => (
               <div key={conv.name} style={{ display: 'flex', gap: '6px', padding: '6px', borderRadius: '4px', background: conv.selected ? '#f0f4ff' : 'transparent', borderLeft: conv.selected ? '2px solid #6366f1' : '2px solid transparent', marginBottom: '2px' }}>
-                <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: conv.color, color: 'white', fontSize: '10px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{conv.init}</div>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: conv.color, color: 'white', fontSize: '9px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{conv.init}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '10px', fontWeight: 600, color: conv.selected ? '#4f46e5' : '#111827' }}>{conv.name}</span>
-                    <span style={{ fontSize: '9px', color: '#9ca3af' }}>{conv.time}</span>
-                  </div>
+                  <span style={{ fontSize: '10px', fontWeight: 600, color: conv.selected ? '#4f46e5' : '#111827', display: 'block' }}>{conv.name}</span>
                   <span style={{ fontSize: '9px', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.msg}</span>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Chat window skeleton */}
           <div style={{ flex: 1, padding: '8px 12px', minWidth: 0 }}>
             <div style={{ borderBottom: '1px solid #f3f4f6', paddingBottom: '6px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '12px', fontWeight: 700, color: '#111827' }}>Olivia Mckinsey</span>
-              <div style={{ display: 'flex', gap: '4px' }}>
-                <div style={{ width: '28px', height: '18px', background: '#1e293b', borderRadius: '4px 0 0 4px' }} />
-                <div style={{ width: '22px', height: '18px', background: '#1e293b', borderRadius: '0 4px 4px 0' }} />
-              </div>
             </div>
-            <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-              <span style={{ background: '#f3f4f6', borderRadius: '999px', padding: '2px 10px', fontSize: '9px', color: '#9ca3af' }}>28 August 2025</span>
-            </div>
-            {/* Messages */}
             <div style={{ height: '10px', width: '60%', background: '#f3f4f6', borderRadius: '8px', marginBottom: '6px' }} />
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '6px' }}>
               <div style={{ height: '24px', width: '55%', background: '#ede9fe', borderRadius: '8px' }} />
             </div>
-            <div style={{ height: '10px', width: '45%', background: '#f3f4f6', borderRadius: '8px', marginBottom: '6px' }} />
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <div style={{ height: '36px', width: '65%', background: '#ede9fe', borderRadius: '8px' }} />
-            </div>
-          </div>
-
-          {/* Details panel skeleton */}
-          <div style={{ width: '220px', borderLeft: '1px solid #f3f4f6', padding: '8px 12px', flexShrink: 0 }}>
-            <div style={{ fontWeight: 700, fontSize: '12px', color: '#111827', marginBottom: '10px' }}>Details</div>
-            <div style={{ fontSize: '10px', fontWeight: 600, color: '#111827', marginBottom: '6px' }}>Chat Data</div>
-            <div style={{ fontSize: '9px', color: '#9ca3af', marginBottom: '2px', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Assignee</span><span style={{ color: '#374151' }}>James West</span>
-            </div>
-            <div style={{ fontSize: '9px', color: '#9ca3af', marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Team</span><span style={{ color: '#374151' }}>Sales Team</span>
-            </div>
-            <div style={{ fontSize: '10px', fontWeight: 600, color: '#111827', marginBottom: '6px' }}>Contact Data</div>
-            {['First Name  Olivia', 'Last Name  Mckinsey', 'Phone  +1 (312) 555-0134'].map((row) => (
-              <div key={row} style={{ fontSize: '9px', color: '#9ca3af', marginBottom: '2px', display: 'flex', justifyContent: 'space-between' }}>
-                <span>{row.split('  ')[0]}</span><span style={{ color: '#374151' }}>{row.split('  ')[1]}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
 
-      {/* Floating & Rotating Gradient animation keyframes */}
+      {/* Mobile Preview Card (<768px) with Rich Sample Data */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '92vw',
+          maxWidth: '420px',
+          background: '#ffffff',
+          borderRadius: '16px 16px 0 0',
+          overflow: 'hidden',
+          boxShadow: '0 -8px 36px rgba(0,80,255,0.2)',
+          zIndex: 5,
+        }}
+        className="block md:hidden"
+      >
+        <div style={{ height: '40px', borderBottom: '1px solid #e5e7eb', background: '#ffffff', display: 'flex', alignItems: 'center', padding: '0 14px', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>☰</div>
+            <span style={{ fontWeight: 800, fontSize: '14px', color: '#0284c7' }}>BOX<span style={{ fontWeight: 600 }}>pad</span></span>
+          </div>
+          <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#ef4444', color: 'white', fontSize: '9px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>M</div>
+        </div>
+        <div style={{ padding: '8px 12px', height: '150px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {/* Search bar */}
+          <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '4px 8px', fontSize: '10px', color: '#9ca3af', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>🔍</span> <span>Search Chat</span>
+          </div>
+
+          {/* Conversation Cards with real data */}
+          {[
+            { name: 'Olivia Mckinsey', time: '23:23', msg: "Oh my god 🤩 I'll try it ASAP, thank...", color: '#0891b2', init: 'O', selected: true },
+            { name: 'Sara Williams', time: '23:16', msg: 'Good Evening, Emily! Hope yo...', color: '#6366f1', init: 'S', selected: false },
+          ].map((conv) => (
+            <div
+              key={conv.name}
+              style={{
+                display: 'flex',
+                gap: '8px',
+                padding: '6px 8px',
+                borderRadius: '8px',
+                background: conv.selected ? '#f0f9ff' : '#ffffff',
+                border: conv.selected ? '1px solid #7dd3fc' : '1px solid #f1f5f9',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                background: conv.color,
+                color: 'white',
+                fontSize: '10px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                {conv.init}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: conv.selected ? '#0369a1' : '#111827' }}>{conv.name}</span>
+                  <span style={{ fontSize: '9px', color: '#9ca3af' }}>{conv.time}</span>
+                </div>
+                <span style={{ fontSize: '9.5px', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.msg}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Keyframes */}
       <style>{`
         @keyframes hexFloat {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-14px) rotate(1.5deg);
-          }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-12px) rotate(1.5deg); }
         }
         @keyframes hexSpin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
