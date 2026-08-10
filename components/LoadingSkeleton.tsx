@@ -428,7 +428,7 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         </div>
       </div>
 
-      {/* Mobile Preview Card (<768px) */}
+      {/* Mobile Preview Card (<768px) with Rich Sample Data */}
       <div
         style={{
           position: 'absolute',
@@ -446,19 +446,56 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         className="block md:hidden"
       >
         <div style={{ height: '40px', borderBottom: '1px solid #e5e7eb', background: '#ffffff', display: 'flex', alignItems: 'center', padding: '0 14px', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>☰</div>
             <span style={{ fontWeight: 800, fontSize: '14px', color: '#0284c7' }}>BOX<span style={{ fontWeight: 600 }}>pad</span></span>
           </div>
           <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#ef4444', color: 'white', fontSize: '9px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>M</div>
         </div>
-        <div style={{ padding: '10px 14px', height: '140px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <div style={{ height: '28px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px' }} />
-          {[1, 2].map((i) => (
-            <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '6px 8px', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
-              <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: i === 1 ? '#0891b2' : '#6366f1', flexShrink: 0 }} />
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <div style={{ width: '60%', height: '10px', background: '#e5e7eb', borderRadius: '4px' }} />
-                <div style={{ width: '85%', height: '8px', background: '#f3f4f6', borderRadius: '4px' }} />
+        <div style={{ padding: '8px 12px', height: '150px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {/* Search bar */}
+          <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '4px 8px', fontSize: '10px', color: '#9ca3af', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>🔍</span> <span>Search Chat</span>
+          </div>
+
+          {/* Conversation Cards with real data */}
+          {[
+            { name: 'Olivia Mckinsey', time: '23:23', msg: "Oh my god 🤩 I'll try it ASAP, thank...", color: '#0891b2', init: 'O', selected: true },
+            { name: 'Sara Williams', time: '23:16', msg: 'Good Evening, Emily! Hope yo...', color: '#6366f1', init: 'S', selected: false },
+          ].map((conv) => (
+            <div
+              key={conv.name}
+              style={{
+                display: 'flex',
+                gap: '8px',
+                padding: '6px 8px',
+                borderRadius: '8px',
+                background: conv.selected ? '#f0f9ff' : '#ffffff',
+                border: conv.selected ? '1px solid #7dd3fc' : '1px solid #f1f5f9',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                background: conv.color,
+                color: 'white',
+                fontSize: '10px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                {conv.init}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: conv.selected ? '#0369a1' : '#111827' }}>{conv.name}</span>
+                  <span style={{ fontSize: '9px', color: '#9ca3af' }}>{conv.time}</span>
+                </div>
+                <span style={{ fontSize: '9.5px', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{conv.msg}</span>
               </div>
             </div>
           ))}
