@@ -322,13 +322,14 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         {/* Heading */}
         <h1
           style={{
-            fontSize: '38px',
+            fontSize: 'clamp(24px, 5vw, 38px)',
             fontWeight: 700,
             color: '#ffffff',
             margin: '0 0 12px',
             textAlign: 'center',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
+            padding: '0 16px',
           }}
         >
           Extracting Information...
@@ -337,12 +338,13 @@ export default function LoadingSkeleton({ onComplete }: LoadingSkeletonProps) {
         {/* Subtitle */}
         <p
           style={{
-            fontSize: '15px',
+            fontSize: 'clamp(13px, 3.5vw, 15px)',
             color: 'rgba(200,220,255,0.6)',
             textAlign: 'center',
             margin: 0,
             maxWidth: '360px',
             lineHeight: 1.6,
+            padding: '0 16px',
           }}
         >
           We are extracting information from the above honey combs to your system
